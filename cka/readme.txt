@@ -35,4 +35,7 @@ sudo kubeadm token create --print-join-command
 on both node run command to join cluster
 sudo kubeadm join 192.168.15.150:6443 --token qw7f19.4hlfjnljkt4ho4j6 \
 	--discovery-token-ca-cert-hash sha256:8031c2f2a9dbfe4516b98977bcc70247447abc7c86854435731a64509f137e11
+After restart
+kubectl -n kube-system rollout restart deployment/coredns
+kubectl rollout restart daemonset calico-node -n kube-system
  
