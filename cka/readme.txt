@@ -19,6 +19,8 @@ wait for complet
 kubectl get all (verify kubecluster on control VM)
 
 #Install Network Add-on
+original
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.3/manifests/calico.yaml
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/calico.yaml
 or
 kubectl replace --force -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/calico.yaml
