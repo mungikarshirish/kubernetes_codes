@@ -20,7 +20,8 @@ kubectl get all (verify kubecluster on control VM)
 
 #Install Network Add-on
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/calico.yaml
-
+or
+kubectl replace --force -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/calico.yaml
 on control
 view cluster config
 kubectl config view
