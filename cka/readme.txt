@@ -17,6 +17,8 @@ cp /cka/crictl.yaml /etc/crictl.yaml
 #Install cluster so need to run on controller only
 sudo kubeadm config images pull
 sudo kubeadm init 
+kube init config ?
+
 wait for complet 
 
 #Setup client on cp 
@@ -54,6 +56,8 @@ sudo crictl inspects container ID / image / POD ID
 
 
 create static pods
+
+kubectl run staticpod - image=nginx --dry-run=client -o yaml > staticpod.yamll (save config as yaml file)
 node states and services
 
 deploy Kubernetes Metrics Server
