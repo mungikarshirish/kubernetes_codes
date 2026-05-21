@@ -41,12 +41,18 @@ sudo kubeadm token create --print-join-command
 on both node run command to join cluster
 sudo kubeadm join ip:6443 --token qw7f19.4hlfjnljkt4ho4j6 \
 	--discovery-token-ca-cert-hash sha256:8031c2f2a9dbfe4516b98977bcc70247447abc7c86854435731a64509f137e11
-ts
+#ts$
 
 kubectl -n kube-system rollout restart deployment/coredns
 kubectl rollout restart daemonset calico-node -n kube-system
 
 crictl commands
+sudo crictl ps 
+sudo crictl images
+sudo crictl pods
+sudo crictl inspects container ID / image / POD ID
+
+
 create static pods
 node states and services
 
