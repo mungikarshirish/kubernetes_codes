@@ -9,6 +9,7 @@ sudo ./setup-container.sh: all 3 nodes
 sudo ./setup-kubetools.sh: all 3 nodes
 
 #Install cluster so need to run on controller only
+sudo kubeadm config images pull
 sudo kubeadm init 
 wait for complet 
 
