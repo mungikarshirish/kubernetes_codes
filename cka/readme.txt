@@ -12,14 +12,15 @@ sudo ./setup-kubetools.sh: all 3 nodes
 sudo kubeadm init 
 wait for complet 
 
-#Setup client
+#Setup client on cp 
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
-kubectl get all (verify kubecluster on control VM)
 
-#Install Network Add-on
-original
+kubectl get all - A (verify kubecluster on control VM)
+
+#Install Network Add-on on cp
+
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 or
 kubectl replace --force -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -27,14 +28,29 @@ on control
 view cluster config
 kubectl config view
 
-
 #if join token get expired need to use From control to get token:
 sudo kubeadm token create --print-join-command
 
 on both node run command to join cluster
-sudo kubeadm join 192.168.15.150:6443 --token qw7f19.4hlfjnljkt4ho4j6 \
+sudo kubeadm join ip:6443 --token qw7f19.4hlfjnljkt4ho4j6 \
 	--discovery-token-ca-cert-hash sha256:8031c2f2a9dbfe4516b98977bcc70247447abc7c86854435731a64509f137e11
-After restart
+ts
+
 kubectl -n kube-system rollout restart deployment/coredns
 kubectl rollout restart daemonset calico-node -n kube-system
- 
+
+crictl commands
+create static pods
+node states and services
+
+deploy Kubernetes Metrics Server
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl logs commands
+edit Kubernetes Metrics Server deployment and add insecure tls
+kubectl edit -n kube-system deployment.apps metrics-server
+   spec:
+     - aggs
+       - --kubelet-insecure-tls
+
+etcd backup
+
