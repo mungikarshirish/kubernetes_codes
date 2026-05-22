@@ -14,6 +14,8 @@ sudo tar zxvf rictl-v1.35.0-linux-arm64.tar.gz -C /usr/local/bin
 rm -rf crictl-v1.35.0-linux-arm64.tar.gz
 cp /cka/crictl.yaml /etc/crictl.yaml
 
+sudo apt install etcd-client -y
+
 #Install cluster so need to run on controller only
 sudo kubeadm config images pull
 sudo kubeadm init 
@@ -88,11 +90,38 @@ kubectl describe node "nodename" verify taints status and conditions
 deploy Kubernetes Metrics Server
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 kubectl logs commands
+kubectl describe pod metrics-server -n kube-system
+kubectl logs -n kube-system metrics-server-b4c746d8b-g7r5b
 edit Kubernetes Metrics Server deployment and add insecure tls
 kubectl edit -n kube-system deployment.apps metrics-server
    spec:
      - aggs
        - --kubelet-insecure-tls
+kubectl top pod/node
+
 
 etcd backup
+sudo etcdctl --endpoints=localhost:2379 \
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \
+--cert=/etc/kubernetes/pki/etcd/server.crt \
+--key=/etc/kubernetes/pki/etcd/server.key \
+snapshot save /home/student/etcd.db
+verify 
+sudo etcdctl --write-out=table snapshot status /home/student/etcd.db
+create copy so we have snapshot backup
 
+procedure to restore snapshot db
+
+kubectl delete --all deploy
+sudo mv /etc/kubernetes/manifests/*.yaml /etc/kubernetes/
+sudo crictl ps
+
+sudo mv /var/lib/etcd /var/lib/etcd-old
+
+sudo etcdctl snapshot restore /home/student/etcd.db \
+--data-dir=/var/lib/etcd
+
+sudo mv /etc/kubernetes/*.yaml /etc/kubernetes/manifests/
+
+sudo crictl ps
+kubectl get deploy -A
