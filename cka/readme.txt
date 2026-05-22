@@ -43,22 +43,47 @@ sudo kubeadm token create --print-join-command
 on both node run command to join cluster
 sudo kubeadm join ip:6443 --token qw7f19.4hlfjnljkt4ho4j6 \
 	--discovery-token-ca-cert-hash sha256:8031c2f2a9dbfe4516b98977bcc70247447abc7c86854435731a64509f137e11
-#ts$
 
-kubectl -n kube-system rollout restart deployment/coredns
+
+#ts for calico and coredns$
+
 kubectl rollout restart daemonset calico-node -n kube-system
+kubectl -n kube-system rollout restart deployment/coredns
+
+
+node troubleshooting 
+
+kubectl describe node <node names>
+
+sudo ls -lrt /var/log
+sudo journalctl -u kubelet
 
 crictl commands
 sudo crictl ps 
 sudo crictl images
 sudo crictl pods
-sudo crictl inspects container ID / image / POD ID
+sudo crictl inspects container ID / POD ID 
 
 
 create static pods
 
 kubectl run staticpod - image=nginx --dry-run=client -o yaml > staticpod.yamll (save config as yaml file)
+move this file to /etc/kubernetes/manifeasts/ 
+
 node states and services
+
+kubectl cordon : mark node as unschedulable
+kubectl drain : unschedulable + remove all running pods, pods from daemonset will not get removed so need to use kubectl drain --ignore-daemonsets
+  • Add --delete-emptydir-data to delete data from emptyDir Pod volumes
+kubectl describe node "nodename" verify taints status
+
+kubectl uncordon (for both above)
+
+node services
+kubelet and containered ( )
+ps aux grep above services
+kubectl describe node "nodename" verify taints status and conditions 
+
 
 deploy Kubernetes Metrics Server
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
