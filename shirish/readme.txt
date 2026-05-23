@@ -15,9 +15,9 @@ rm -rf crictl-v1.35.0-linux-arm64.tar.gz
 sudo cp /cka/crictl.yaml /etc/crictl.yaml
 
 sudo apt update
-sudo apt install -y etcd-client
+etcd install -> etcdinstall.sh
 etcdctl version
-
+etcdutl version
 
 #Install cluster so need to run on controller only
 sudo kubeadm config images pull
@@ -105,9 +105,8 @@ kubectl top pod/node
 Metallb v0.16.0
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/refs/heads/main/config/manifests/metallb-native.yaml
 kubectl apply -f metallb-config.yaml
-# Create the Nginx deployment
+
 kubectl create deployment test-nginx --image=nginx --port=80
-# Expose the deployment as a LoadBalancer service
 kubectl expose deployment test-nginx --type=LoadBalancer --port=80
 
 kubectl delete service test-nginx
@@ -115,27 +114,40 @@ kubectl delete deployment test-nginx
 
 
 etcd backup
-sudo etcdctl --endpoints=localhost:2379 \
---cacert=/etc/kubernetes/pki/etcd/ca.crt \
---cert=/etc/kubernetes/pki/etcd/server.crt \
---key=/etc/kubernetes/pki/etcd/server.key \
-snapshot save /home/student/etcd.db
-verify 
-sudo etcdctl --write-out=table snapshot status /home/student/etcd.db
+etcdctl version
+etcdutl version
+
+sudo etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot save etcd-backup.db
+
 create copy so we have snapshot backup
+verify 
+sudo etcdutl --write-out=table snapshot status /home/student/etcd-backup.db
 
 procedure to restore snapshot db
 
-kubectl delete --all deploy
+Move Statis Pod Manifests
 sudo mv /etc/kubernetes/manifests/*.yaml /etc/kubernetes/
+
 sudo crictl ps
 
-sudo mv /var/lib/etcd /var/lib/etcd-old
+sudo mv /var/lib/etcd /var/lib/etcd-old (if you have data, when practicing)
 
-sudo etcdctl snapshot restore /home/student/etcd.db \
---data-dir=/var/lib/etcd
+sudo etcdutl --data-dir /var/lib/etcd-backup snapshot restore etcd-backup.db
 
-sudo mv /etc/kubernetes/*.yaml /etc/kubernetes/manifests/
+edit etcd.yaml from /tmp dir and update db dir path in following
+  under command from spec
+  volumemount: volume path
+  volume:host path
 
+move etcd.yaml from /tmp to /etc/kubernetes/Manifests
+wait to up and running etcd pod
+move api yaml wait for up and running 
+move remaining both file (controller and scheduler)
 sudo crictl ps
 kubectl get deploy -A
+you should have all your deployments / secrets / lb everything 
