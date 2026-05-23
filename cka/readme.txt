@@ -12,9 +12,12 @@ install crictl
 wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.35.0/crictl-v1.35.0-linux-arm64.tar.gz : x86 or arm64?
 sudo tar zxvf rictl-v1.35.0-linux-arm64.tar.gz -C /usr/local/bin
 rm -rf crictl-v1.35.0-linux-arm64.tar.gz
-cp /cka/crictl.yaml /etc/crictl.yaml
+sudo cp /cka/crictl.yaml /etc/crictl.yaml
 
-sudo apt install etcd-client -y
+sudo apt update
+sudo apt install -y etcd-client
+etcdctl version
+
 
 #Install cluster so need to run on controller only
 sudo kubeadm config images pull
