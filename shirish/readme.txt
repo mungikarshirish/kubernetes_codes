@@ -102,6 +102,17 @@ kubectl edit -n kube-system deployment.apps metrics-server
        - --kubelet-insecure-tls
 kubectl top pod/node
 
+Metallb v0.16.0
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/refs/heads/main/config/manifests/metallb-native.yaml
+kubectl apply -f metallb-config.yaml
+# Create the Nginx deployment
+kubectl create deployment test-nginx --image=nginx --port=80
+# Expose the deployment as a LoadBalancer service
+kubectl expose deployment test-nginx --type=LoadBalancer --port=80
+
+kubectl delete service test-nginx
+kubectl delete deployment test-nginx
+
 
 etcd backup
 sudo etcdctl --endpoints=localhost:2379 \
