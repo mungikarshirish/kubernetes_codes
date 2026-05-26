@@ -151,3 +151,29 @@ move remaining both file (controller and scheduler)
 sudo crictl ps
 kubectl get deploy -A
 you should have all your deployments / secrets / lb everything 
+
+Upgrade Cluster (cp, and worker) follow k.io/docs for specific ver (from - to)
+  1st cp
+  update repo (specific version)
+  Determine which version to upgrade to
+  Upgrade kubeadm
+  sudo kubeadm upgrade plan
+  sudo kubeadm upgrade apply v1.x.x
+  upgrade network plugin if needed
+  repeat process if you have multiple cp (sudo kubeadm upgrade node)
+  Drain the node
+  Upgrade kubelet and kubectl
+  Restart the daemon-reload and kubelet
+  Uncordon the node
+  verify cp version
+  2nd upgrade worker nodes
+  update repo (specific version)
+  Determine which version to upgrade to
+  Upgrade kubeadm node
+  Drain the node
+  Upgrade kubelet and kubectl
+  Restart the daemon-reload and kubelet
+  Uncordon the node
+  verify nd version
+
+
