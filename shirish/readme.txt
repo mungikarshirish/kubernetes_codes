@@ -10,7 +10,7 @@ sudo ./setup-kubetools.sh: all 3 nodes
 
 install crictl
 wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.35.0/crictl-v1.35.0-linux-arm64.tar.gz : x86 or arm64?
-sudo tar zxvf rictl-v1.35.0-linux-arm64.tar.gz -C /usr/local/bin
+sudo tar zxvf crictl-v1.35.0-linux-arm64.tar.gz -C /usr/local/bin
 rm -rf crictl-v1.35.0-linux-arm64.tar.gz
 sudo cp /cka/crictl.yaml /etc/crictl.yaml
 
