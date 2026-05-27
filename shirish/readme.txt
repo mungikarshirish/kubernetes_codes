@@ -1,3 +1,12 @@
+create 3 ubuntu (22 =<)
+
+%sudo   ALL=(ALL:ALL) NOPASSWD: ALL
+
+disable swap
+sudo swapoff -a
+sudo sed -i '/\bswap\b/s/^/#/' /etc/fstab
+free -h
+
 git repo: https://github.com/sandervanvugt/cka.git
 git clone https://github.com/sandervanvugt/cka
 
@@ -19,7 +28,7 @@ etcd install -> etcdinstall.sh
 etcdctl version
 etcdutl version
 
-#Install cluster so need to run on controller only
+#create cluster so need to run on controller only
 sudo kubeadm config images pull
 sudo kubeadm init 
 kube init config ?
@@ -175,5 +184,3 @@ Upgrade Cluster (cp, and worker) follow k.io/docs for specific ver (from - to)
   Restart the daemon-reload and kubelet
   Uncordon the node
   verify nd version
-
-
