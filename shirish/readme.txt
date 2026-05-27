@@ -7,6 +7,9 @@ sudo swapoff -a
 sudo sed -i '/\bswap\b/s/^/#/' /etc/fstab
 free -h
 
+sudo systemctl set-hostname <new hostname>
+sudo /etc/netplan.50 (update ip)
+
 git repo: https://github.com/sandervanvugt/cka.git
 git clone https://github.com/sandervanvugt/cka
 
