@@ -10,6 +10,10 @@ free -h
 sudo systemctl set-hostname <new hostname>
 sudo /etc/netplan.50 (update ip)
 
+passwd less ssh if needed (cp ha setup)
+ssh key-gen 
+ssh-copy-id <destnation ip>
+
 git repo: https://github.com/sandervanvugt/cka.git
 git clone https://github.com/sandervanvugt/cka
 
