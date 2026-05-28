@@ -1,0 +1,57 @@
+using template create control plane and workers nos, use below to create one control plane and three workers 
+(template is created for latest -1 version so we can use template)
+sudo kubeadm init 
+
+wait for complete 
+
+#Setup client on cp 
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl get all - A (verify kube cluster on control VM)
+
+#Install Network Add-on on cp
+
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+or
+kubectl replace --force -f https://docs.projectcalico.org/manifests/calico.yaml
+on control
+
+#if join token get expired need to use From control to get token:
+sudo kubeadm token create --print-join-command
+
+on both node run command to join cluster
+sudo kubeadm join ip:6443 --token qw7f19.4hlfjnljkt4ho4j6 \
+	--discovery-token-ca-cert-hash sha256:8031c2f2a9dbfe4516b98977bcc70247447abc7c86854435731a64509f137e11
+
+kubectl get all -A
+
+previous version cluster is ready 
+https://kubernetes.io/docs/home/
+search for "Upgrading kubeadm clusters"
+select correct version like "Upgrading a kubeadm cluster from 1.34 to 1.35"
+steps (follow document carefully, https://kubernetes.io/docs/home/)
+  For upgrade CP  
+    Changing The Kubernetes Package Repository
+    Determine which version to upgrade to
+    Upgrading control plane node
+    Upgrade kubeadm:
+    sudo kubeadm upgrade plan (verify current vs target)
+    sudo kubeadm upgrade apply v1.36.x (verify version, it will upgrade etcd,api, controller and scheduler)
+    Drain the node (cp)
+    Upgrade kubelet and kubectl
+    Uncordon the node (cp)
+  For Upgrade worker nodes (follow doc carefully, https://kubernetes.io/docs/home/) need to upgrade one by one
+    Changing The Kubernetes Package Repository
+    Upgrade kubeadm
+    Drain the node
+    Upgrade kubelet and kubectl
+    sudo systemctl daemon-reload
+    sudo systemctl restart kubelet
+    Uncordon the node (worker node)
+
+
+    
+
+

@@ -2,7 +2,7 @@ using template create control plane and workers nos, use below to create one con
 
 sudo kubeadm init 
 
-wait for complet 
+wait for complete 
 
 #Setup client on cp 
   mkdir -p $HOME/.kube
