@@ -1,0 +1,44 @@
+use template (5 vms cp01,02,03,nd01,02)
+
+sudo systemctl set-hostname <new hostname>
+sudo /etc/netplan.50 (update ip)
+
+need LB (cloud or local), will use local ubuntu LB, local lb need nopasswd and passwd less ssh
+need to have one free ip for lb so we can use kubeadm init to IP
+need to add that free IP and network name in "keepalived.conf"
+
+lets assume free ip 192.168.0.100 and vm network card name is ens160
+so from keepalived.conf line 17 for interface name and line 25 for virtual IP (free IP for kubeadm init)
+
+sudo nopasswd all (we have this on our template)
+passwd less ssh for 5 vms cpo1 to all VMs
+from cp01 (from 3 cp run on only one cp)
+ssh key-gen 
+ssh-copy-id <destination ip>
+run setup-container.sh and kubetools.sh  on all vms (we have already in our template)
+run setup-lb-ubuntu.sh
+    provide cp01,02,03 IP and password 
+once done with script 
+nc 192.168.0.100 6443 (no output as kubeadm is not installed yet) so we can just ping this IP 
+load balancer is ready (cp01,02,03) lb will distribute traffic on theses node on port 6443 only
+ip a to find ip in nodes
+
+sudo kubeadm init --control-plane-endpoint "192.168.0.100:6443" --upload-certs
+on cp01
+setup client 
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+apply network plugin
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+now from kubeadm init command output find kubeadm join link for cp and worker 
+difference between control plane join and worker join
+in control plane join command you will see control plane and key
+on worker join command you will see ca cert only
+use kubeadm with sudo command 
+after using kubeadm join on remaining cps  
+mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+now from any cp we can connect to cluster copy config to local 
+poweroff  any cp and check if you can connect to cluster
