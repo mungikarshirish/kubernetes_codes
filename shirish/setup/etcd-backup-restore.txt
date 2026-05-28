@@ -1,0 +1,38 @@
+on working cluster
+verify you have some deployments so after restore we can see deleted apps are back in working condition
+verify etcdctl version & etcdutl version
+sudo etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot save etcd-backup.db 
+
+create copy so we have snapshot backup
+verify 
+sudo etcdutl --write-out=table snapshot status etcd-backup.db
+
+delete few / all deployments
+
+procedure to restore snapshot db
+
+Move Statis Pod Manifests
+sudo mv /etc/kubernetes/manifests/*.yaml /etc/kubernetes/
+sudo crictl ps
+
+sudo mv /var/lib/etcd /var/lib/etcd-old (if you have data, when practicing)
+
+sudo etcdutl --data-dir /var/lib/etcd-backup snapshot restore etcd-backup.db
+
+edit etcd.yaml from /tmp dir and update etcd db dir path in following
+  under command from spec
+  volumemount: volume path
+  volume:host path
+
+move etcd.yaml from /tmp to /etc/kubernetes/Manifests
+wait to up and running etcd pod
+move api yaml wait for up and running 
+move remaining both file (controller and scheduler)
+sudo crictl ps
+kubectl get deploy -A
+you should have all your deployments 
