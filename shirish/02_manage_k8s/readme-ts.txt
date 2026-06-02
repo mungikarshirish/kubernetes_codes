@@ -28,3 +28,8 @@ node services
 kubelet and containered ( )
 ps aux grep above services
 kubectl describe node "nodename" verify taints status and conditions 
+
+create static pods
+
+kubectl run staticpod - image=nginx --dry-run=client -o yaml > staticpod.yamll (save config as yaml file)
+move this file to /etc/kubernetes/manifeasts/ 
