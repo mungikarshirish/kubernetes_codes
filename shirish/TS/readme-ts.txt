@@ -3,26 +3,18 @@
 kubectl rollout restart daemonset calico-node -n kube-system
 kubectl -n kube-system rollout restart deployment/coredns
 
-
-node troubleshooting 
-
-kubectl describe node <node names>
-
-sudo ls -lrt /var/log
-sudo journalctl -u kubelet
-
-crictl commands
+crictl commands (verify endpoints then run commands)
 sudo crictl ps 
 sudo crictl images
 sudo crictl pods
 sudo crictl inspects container ID / POD ID 
 
+node troubleshooting 
+kubectl describe node <node names> / type like pod  etc .....
 
-create static pods
+sudo ls -lrt /var/log
+sudo journalctl -u kubelet / service status too for TS
 
-kubectl run staticpod - image=nginx --dry-run=client -o yaml > staticpod.yamll (save config as yaml file)
-move this file to /etc/kubernetes/manifeasts/ 
- 
 node states and services
 
 kubectl cordon : mark node as unschedulable
