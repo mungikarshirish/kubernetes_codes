@@ -1,0 +1,10 @@
+k apply -f security-context.yaml
+    line 4 to 9 security context for pod
+    line 20 and 21 security context for containers
+k get po
+k exec -it security-context-demo -- sh
+ps
+cd /data
+ls -l
+id 
+exit
