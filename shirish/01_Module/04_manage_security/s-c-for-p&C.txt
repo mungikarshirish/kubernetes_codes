@@ -1,3 +1,4 @@
+security context for pod and containers
 k apply -f security-context.yaml
     line 4 to 9 security context for pod
     line 20 and 21 security context for containers
