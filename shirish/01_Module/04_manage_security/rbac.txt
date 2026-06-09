@@ -1,0 +1,51 @@
+deploy pod (alpine default)
+k run mypod --image=alpine -- sleep 3600
+
+verify service account and ServiceAccountName
+k get pods mypod -o yaml
+serviceAccount: default
+serviceAccountName: default
+
+login to pod (exec)
+k exec -it mypod -- sh
+
+install curl
+apk add --update curl
+
+try to access kubernetes api (forbidden)
+curl https://kubernetes/api/v1 --insecure
+
+view and add token
+TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+echo $TOKEN
+
+use token and try to access 
+curl -H "Authorization: Bearer $TOKEN" https://kubernetes/api/v1 --insecure
+
+you will get default access and you can not do much like list pods
+curl -H "Authorization: Bearer $TOKEN" https://kubernetes/api/v1/namespaces/default/pods/ --insecure
+exit from pod
+
+create service account
+k create sa mysa
+
+create role as list-pods
+k create role list-pods --resource=pods --verb=list
+
+bind list-pods role with service accound mysa
+k create rolebinding list-pods --role=list-pods --serviceaccount=default:mysa 
+
+k apply -f mysapod.yaml
+
+login to pod (exec)
+k exec -it mypod -- sh
+
+install curl
+apk add --update curl
+
+view and add token
+TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+echo $TOKEN
+
+you will get default access and you can list pods
+curl -H "Authorization: Bearer $TOKEN" https://kubernetes/api/v1/namespaces/default/pods/ --insecure
